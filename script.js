@@ -47,9 +47,18 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     // Add active class to navigation on scroll
+    let lastScrollTime = 0;
+    const scrollThrottle = 100; // milliseconds
+    
     window.addEventListener('scroll', function() {
+        const now = Date.now();
+        if (now - lastScrollTime < scrollThrottle) {
+            return;
+        }
+        lastScrollTime = now;
+        
         const sections = document.querySelectorAll('section');
-        const navLinks = document.querySelectorAll('.nav-links a');
+        const navLinkElements = document.querySelectorAll('.nav-links a');
         
         let current = '';
         
@@ -57,12 +66,12 @@ document.addEventListener('DOMContentLoaded', function() {
             const sectionTop = section.offsetTop;
             const sectionHeight = section.clientHeight;
             
-            if (scrollY >= (sectionTop - 200)) {
+            if (window.scrollY >= (sectionTop - 200)) {
                 current = section.getAttribute('id');
             }
         });
         
-        navLinks.forEach(link => {
+        navLinkElements.forEach(link => {
             link.classList.remove('active');
             if (link.getAttribute('href') === '#' + current) {
                 link.classList.add('active');
